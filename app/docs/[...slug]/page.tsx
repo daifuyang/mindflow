@@ -1,6 +1,23 @@
 import { notFound } from "next/navigation"
-import { getDocContent } from "@/lib/docs"
+import { getDocContent, getDocTree, TreeNode } from "@/lib/docs"
 import { MarkdownRenderer } from "@/components/knowledge-base/markdown-renderer"
+
+function collectSlugs(nodes: TreeNode[]): string[][] {
+  const slugs: string[][] = []
+  for (const node of nodes) {
+    if (node.type === "file") {
+      slugs.push(node.slug.split("/"))
+    } else if (node.children) {
+      slugs.push(...collectSlugs(node.children))
+    }
+  }
+  return slugs
+}
+
+export function generateStaticParams() {
+  const tree = getDocTree()
+  return collectSlugs(tree).map((slug) => ({ slug }))
+}
 
 export default async function DocPage({
   params,
