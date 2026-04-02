@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import { getDocContent, getDocTree, TreeNode } from "@/lib/docs"
 import { MarkdownRenderer } from "@/components/knowledge-base/markdown-renderer"
+import { CopyButton } from "@/components/knowledge-base/copy-button"
 
 function collectSlugs(nodes: TreeNode[]): string[][] {
   const slugs: string[][] = []
@@ -33,13 +34,16 @@ export default async function DocPage({
 
   return (
     <div>
-      <div className="mb-8">
+      <div className="relative mb-8">
         <h1 className="text-3xl font-bold tracking-tight">{doc.title}</h1>
         {doc.description && (
           <p className="mt-2 text-lg text-muted-foreground">
             {doc.description}
           </p>
         )}
+        <div className="absolute top-0 right-0">
+          <CopyButton content={doc.content} />
+        </div>
       </div>
       <MarkdownRenderer content={doc.content} />
     </div>
