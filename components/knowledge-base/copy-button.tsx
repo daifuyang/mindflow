@@ -6,7 +6,13 @@ import { ChevronDown } from "lucide-react"
 
 function markdownToWeChatHTML(md: string): string {
   const lines = md.split("\n")
-  const blocks: { type: string; content?: string; level?: number; rows?: string[][]; headers?: string[] }[] = []
+  const blocks: {
+    type: string
+    content?: string
+    level?: number
+    rows?: string[][]
+    headers?: string[]
+  }[] = []
   let i = 0
 
   while (i < lines.length) {
@@ -26,7 +32,11 @@ function markdownToWeChatHTML(md: string): string {
 
     const headingMatch = line.match(/^(#{1,6})\s+(.*)/)
     if (headingMatch) {
-      blocks.push({ type: "heading", content: headingMatch[2], level: headingMatch[1].length })
+      blocks.push({
+        type: "heading",
+        content: headingMatch[2],
+        level: headingMatch[1].length,
+      })
       i++
       continue
     }
@@ -282,41 +292,43 @@ export function CopyButton({ content }: { content: string }) {
   )
 
   return (
-    <div className="relative" ref={ref}>
-      <Button
-        variant="outline"
-        size="sm"
-        className="group gap-1"
-        onClick={() => setOpen(!open)}
-      >
-        复制
-        <ChevronDown className="h-3 w-3 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-      </Button>
+    <>
+      <div className="fixed right-6 bottom-6 z-50" ref={ref}>
+        <Button
+          variant="outline"
+          size="sm"
+          className="group gap-1 shadow-lg"
+          onClick={() => setOpen(!open)}
+        >
+          复制
+          <ChevronDown className="h-3 w-3 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+        </Button>
 
-      {open && (
-        <div className="absolute right-0 top-full mt-1 min-w-[140px] rounded-lg border bg-popover p-1 shadow-md z-50">
-          <button
-            className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted transition-colors"
-            onClick={() => handleCopy("markdown")}
-          >
-            复制 Markdown
-          </button>
-          <button
-            className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted transition-colors"
-            onClick={() => handleCopy("wechat")}
-          >
-            复制微信格式
-          </button>
-        </div>
-      )}
+        {open && (
+          <div className="absolute right-0 bottom-full z-50 mb-1 min-w-[140px] rounded-lg border bg-popover p-1 shadow-md">
+            <button
+              className="w-full rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-muted"
+              onClick={() => handleCopy("markdown")}
+            >
+              复制 Markdown
+            </button>
+            <button
+              className="w-full rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-muted"
+              onClick={() => handleCopy("wechat")}
+            >
+              复制微信格式
+            </button>
+          </div>
+        )}
+      </div>
 
       {showToast && (
-        <div className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2 animate-in duration-300 fade-in slide-in-from-bottom-4">
+        <div className="fixed bottom-20 left-1/2 z-50 -translate-x-1/2 animate-in duration-300 fade-in slide-in-from-bottom-4">
           <div className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background shadow-lg">
             {toastMessage}
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }
