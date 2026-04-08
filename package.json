@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build && cp -r out/* /usr/local/workspace/www/mindflow.zerocmf.com/ && nginx -t && nginx -s reload",
-    "deploy": "pnpm build",
+    "build": "next build",
+    "deploy": "pm2 restart mindflow",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
