@@ -14,8 +14,8 @@ order: 2
 | 日期       | 标题                                                                                                                                                     | 状态      | 平台         | 数据                                                        |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------------ | ----------------------------------------------------------- |
 | 2026-04-01 | [AI 编程新体验：用 OpenCode Web 在指尖完成开发，对比 OpenClaw](/docs/media-planning/articles/ai-dev/2026-04-01-opencode-web-vs-openclaw)                 | published | 掘金、公众号 | [公众号](https://mp.weixin.qq.com/s/HKKTHCLWbHWYigxn43yysQ) |
-| 2026-04-02 | [手机发文的秘密：OpenCode + Markdown + 微信公众号助手，随时随地发布技术文章](/docs/media-planning/articles/ai-dev/2026-04-02-opencode-mobile-publishing) | draft     | 掘金、公众号 | -                                                           |
-| 2026-04-03 | [打造自己的低成本龙虾 claw：微信 AI 助手，用自然语言管任务、盯数据](/docs/media-planning/articles/ai-dev/2026-04-03-weixin-claw-low-cost-lobster)        | published | 掘金、公众号 | -                                                           |
+| 2026-04-02 | [手机发文的秘密：OpenCode + Markdown + 微信公众号助手，随时随地发布技术文章](/docs/media-planning/articles/ai-dev/2026-04-02-opencode-mobile-publishing) | published | 掘金、公众号 | [公众号](https://mp.weixin.qq.com/s/pfJ7bIMa4okXMNv_ObGc1Q) |
+| 2026-04-03 | [打造自己的低成本龙虾 claw：微信 AI 助手，用自然语言管任务、盯数据](/docs/media-planning/articles/ai-dev/2026-04-03-weixin-claw-low-cost-lobster)        | published | 掘金、公众号 | [公众号](https://mp.weixin.qq.com/s/nO6_DjLKxBgiPwyTJa1aeA) |
 
 ### 开源 CMS 实战
 
@@ -41,7 +41,7 @@ order: 2
 
 | 指标        | 掘金 | 公众号 | 合计 |
 | ----------- | ---- | ------ | ---- |
-| 发文数      | 0    | 1      | 1    |
+| 发文数      | 3    | 3      | 3    |
 | 总阅读量    | 0    | 0      | 0    |
 | 总点赞/收藏 | 0    | 0      | 0    |
 | 涨粉数      | 0    | 0      | 0    |

@@ -143,14 +143,14 @@ pm2 startup
 ```nginx
 server {
     server_name your-domain.com;
-    
+
     location / {
         proxy_pass http://localhost:3000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
     }
-    
+
     listen 443 ssl;
     ssl_certificate /path/to/cert.pem;
     ssl_certificate_key /path/to/key.pem;
@@ -167,14 +167,17 @@ Skill 文件使用 Markdown 格式，例如：
 # Skill: aliyun-credentials
 
 ## 阿里云凭证
+
 - AccessKey ID: your-access-key-id
 - AccessKey Secret: your-access-key-secret
 
 ## 服务器信息
+
 - 公网 IP: YOUR_SERVER_IP
 - 域名: example.com
 
 ## 常用操作
+
 - DNS 管理: aliyun alidns
 - OSS 管理: aliyun oss
 ```
@@ -186,22 +189,27 @@ Skill 文件使用 Markdown 格式，例如：
 ## OpenCode Web 实战：从零部署一个站点
 
 ### 第一步：拉取项目
+
 ```bash
 git clone https://github.com/username/my-project.git
 ```
 
 ### 第二步：安装依赖并构建
+
 ```bash
 cd my-project && pnpm install && pnpm build
 ```
 
 ### 第三步：修改配置为 SSG 模式
+
 告诉 AI：「这个项目要导出静态文件」，AI 自动修改 `next.config.mjs` 添加 `output: 'export'`，并处理动态路由。
 
 ### 第四步：配置 Nginx
+
 告诉 AI：「配置 Nginx，域名 mysite.example.com」，AI 读取 Skill 生成规范配置。
 
 ### 第五步：DNS + SSL
+
 告诉 AI：「添加 DNS 记录并申请证书」，AI 调用 CLI 完成。
 
 从 0 到站点上线，5 步完成，耗时约 10 分钟。AI 费用：0 元。
@@ -221,29 +229,34 @@ cd my-project && pnpm install && pnpm build
 ## 适合谁用
 
 **推荐 OpenCode Web：**
+
 - 独立开发者 / 全栈开发者
 - 做技术自媒体，需要高频使用 AI
 - 需要跨设备随时访问
 - 不想为 AI 工具持续付费
 
 **OpenClaw(AI龙虾) 也不错：**
+
 - 喜欢折腾配置，享受自定义的乐趣
 - 公司报销 AI 费用
 - 需要私人 AI 助手的完整智能体能力
 
 ## 总结
 
-| 场景 | 推荐工具 |
-|------|---------|
-| 全栈项目开发 | OpenCode Web |
-| 技术文章写作 | OpenCode Web |
-| 服务器运维 | OpenCode Web + Skills |
-| 私人 AI 助手 | OpenClaw(AI龙虾) |
-| 零预算个人项目 | OpenCode Web |
+| 场景           | 推荐工具              |
+| -------------- | --------------------- |
+| 全栈项目开发   | OpenCode Web          |
+| 技术文章写作   | OpenCode Web          |
+| 服务器运维     | OpenCode Web + Skills |
+| 私人 AI 助手   | OpenClaw(AI龙虾)      |
+| 零预算个人项目 | OpenCode Web          |
 
 OpenCode Web 对我来说已经不只是编程工具，而是一个懂我技术栈、知道我的服务器配置、能帮我干活的全能助手。部署到公网后，随时随地打开浏览器就能用。而且免费。
 
----
+## 联系我
 
-*本文由 OpenCode Web 辅助完成，使用免费模型，成本 0 元。*
-*文中所有操作均为真实记录，非模拟演示。*
+- 微信：扫码关注公众号「富阳说」
+- GitHub：https://github.com/daifuyang
+- 博客：https://mindflow.zerocmf.com
+
+如果本文对你有帮助，点个赞让更多人看到。有问题欢迎评论区聊聊。
