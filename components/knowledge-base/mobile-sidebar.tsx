@@ -40,10 +40,6 @@ export function MobileSidebar({ tree }: { tree: TreeNode[] }) {
         >
           {isOpen ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
-        <Link href="/" className="flex items-center gap-2">
-          <BookOpen className="size-5 text-primary" />
-          <span className="font-semibold">MindFlow</span>
-        </Link>
       </header>
 
       {isOpen && (
@@ -52,7 +48,7 @@ export function MobileSidebar({ tree }: { tree: TreeNode[] }) {
           <aside
             className={cn(
               "absolute inset-y-0 left-0 z-40 w-72 border-r border-border bg-sidebar pt-14",
-              "animate-in slide-in-from-left duration-200"
+              "animate-in duration-200 slide-in-from-left"
             )}
             onClick={(e) => e.stopPropagation()}
           >

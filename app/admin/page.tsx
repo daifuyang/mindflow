@@ -69,7 +69,7 @@ export default function AdminPage() {
     if (!selectedArticle || !content) return
 
     setLoading(true)
-    setMessage("")
+    setMessage("正在发布...")
 
     const token = localStorage.getItem("admin_token")
     const res = await fetch("/api/wechat/publish", {
@@ -85,11 +85,38 @@ export default function AdminPage() {
     })
 
     const data = await res.json()
-    setMessage(
-      data.success
-        ? `发布成功！mediaId: ${data.mediaId}`
-        : `发布失败: ${data.message}`
-    )
+    if (data.success) {
+      setMessage(`发布成功！mediaId: ${data.mediaId}`)
+    } else if (data.message?.includes("invalid media_id")) {
+      setMessage(
+        "API权限不足：草稿箱功能需要微信官方内测权限。当前可使用「复制微信格式」功能手动发布。"
+      )
+    } else {
+      setMessage(`发布失败: ${data.message}`)
+    }
+    setLoading(false)
+  }
+
+  const handleCopyWechatFormat = async () => {
+    if (!content) return
+    setLoading(true)
+    try {
+      const res = await fetch("/api/wechat/preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: selectedArticle?.title || "", content }),
+      })
+      const html = await res.text()
+      const blob = new Blob([html], { type: "text/html" })
+      const item = new ClipboardItem({
+        "text/html": blob,
+        "text/plain": new Blob([content], { type: "text/plain" }),
+      })
+      await navigator.clipboard.write([item])
+      setMessage("已复制微信格式！请到公众号后台粘贴。")
+    } catch {
+      setMessage("复制失败，请手动复制内容。")
+    }
     setLoading(false)
   }
 
@@ -156,6 +183,13 @@ export default function AdminPage() {
                   className="rounded border px-4 py-2 hover:bg-muted"
                 >
                   预览
+                </button>
+                <button
+                  onClick={handleCopyWechatFormat}
+                  disabled={loading}
+                  className="rounded border px-4 py-2 hover:bg-muted disabled:opacity-50"
+                >
+                  复制微信格式
                 </button>
                 <button
                   onClick={handlePublish}

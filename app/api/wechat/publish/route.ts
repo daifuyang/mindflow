@@ -28,9 +28,31 @@ async function getAccessToken(): Promise<string | null> {
   }
 }
 
+async function uploadImageToWeChat(
+  token: string,
+  imageUrl: string
+): Promise<string | null> {
+  try {
+    const response = await fetch(imageUrl)
+    const arrayBuffer = await response.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+
+    const form = new FormData()
+    form.append("media", new Blob([buffer]), "cover.jpg")
+
+    const res = await fetch(
+      `https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=${token}&type=image`,
+      { method: "POST", body: buffer as unknown as BodyInit }
+    )
+    const data = await res.json()
+    return data.media_id || null
+  } catch {
+    return null
+  }
+}
+
 function verifyToken(authHeader: string | null): boolean {
   if (!authHeader?.startsWith("Bearer ")) return false
-  // 简化验证，生产环境应校验JWT
   return authHeader.slice(7).length > 0
 }
 
@@ -51,8 +73,14 @@ export async function POST(request: Request) {
     )
   }
 
-  const { title, content, coverImage, author, digest } = await request.json()
+  const { title, content, author, digest, coverImage } = await request.json()
   const htmlContent = markdownToWeChatHTML(content)
+
+  let thumbMediaId: string | undefined
+  if (coverImage) {
+    const mediaId = await uploadImageToWeChat(token, coverImage)
+    thumbMediaId = mediaId || undefined
+  }
 
   const articles = [
     {
@@ -61,8 +89,7 @@ export async function POST(request: Request) {
       content: htmlContent,
       content_source_url: "",
       digest: digest || content.slice(0, 120) + "...",
-      show_cover_pic: coverImage ? 1 : 0,
-      thumb_media_id: "",
+      ...(thumbMediaId && { thumb_media_id: thumbMediaId, show_cover_pic: 1 }),
     },
   ]
 
@@ -89,7 +116,7 @@ export async function POST(request: Request) {
       { success: false, message: data.errmsg || "上传失败" },
       { status: 500 }
     )
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, message: "请求失败" },
       { status: 500 }
