@@ -86,9 +86,7 @@ function buildTree(dir: string, basePath: string[] = []): TreeNode[] {
 }
 
 function formatName(name: string): string {
-  return name
-    .replace(/[-_]/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase())
+  return name.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
 export function getDocTree(): TreeNode[] {
@@ -130,4 +128,47 @@ export function getFirstDocSlug(): string | null {
   const files = collectFiles(tree)
   if (files.length === 0) return null
   return files[0].slug
+}
+
+function findNodeBySlug(
+  nodes: TreeNode[],
+  targetSlug: string
+): TreeNode | null {
+  for (const node of nodes) {
+    if (node.slug === targetSlug) return node
+    if (node.children) {
+      const found = findNodeBySlug(node.children, targetSlug)
+      if (found) return found
+    }
+  }
+  return null
+}
+
+function findBreadcrumbs(
+  nodes: TreeNode[],
+  targetSlug: string,
+  path: TreeNode[] = []
+): TreeNode[] | null {
+  for (const node of nodes) {
+    const currentPath = [...path, node]
+    if (node.slug === targetSlug) return currentPath
+    if (node.children) {
+      const found = findBreadcrumbs(node.children, targetSlug, currentPath)
+      if (found) return found
+    }
+  }
+  return null
+}
+
+export function getBreadcrumbs(
+  slug: string[]
+): { title: string; slug: string }[] {
+  const fullSlug = slug.join("/")
+  const tree = getDocTree()
+  const path = findBreadcrumbs(tree, fullSlug)
+  if (!path) return []
+  return path.map((node) => ({
+    title: node.title || node.name,
+    slug: node.slug,
+  }))
 }

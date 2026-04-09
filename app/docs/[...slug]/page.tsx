@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation"
-import { getDocContent, getDocTree, TreeNode } from "@/lib/docs"
+import { getDocContent, getDocTree, getBreadcrumbs, TreeNode } from "@/lib/docs"
 import { MarkdownRenderer } from "@/components/knowledge-base/markdown-renderer"
 import { CopyButton } from "@/components/knowledge-base/copy-button"
+import { Breadcrumbs } from "@/components/knowledge-base/breadcrumbs"
+import { Clock } from "lucide-react"
 
 function collectSlugs(nodes: TreeNode[]): string[][] {
   const slugs: string[][] = []
@@ -32,18 +34,34 @@ export default async function DocPage({
     notFound()
   }
 
+  const breadcrumbs = getBreadcrumbs(slug)
+
   return (
-    <div>
-      <div className="mb-8">
+    <div className="relative">
+      <div className="mb-6">
+        <Breadcrumbs
+          items={breadcrumbs.slice(1).map((b) => ({
+            label: b.title,
+            href: `/docs/${b.slug}`,
+          }))}
+          className="mb-4"
+        />
+      </div>
+
+      <header className="mb-8 border-b border-border pb-6">
         <h1 className="text-3xl font-bold tracking-tight">{doc.title}</h1>
         {doc.description && (
-          <p className="mt-2 text-lg text-muted-foreground">
+          <p className="mt-3 text-lg leading-relaxed text-muted-foreground">
             {doc.description}
           </p>
         )}
-      </div>
+      </header>
+
       <MarkdownRenderer content={doc.content} />
-      <CopyButton content={doc.content} />
+
+      <div className="mt-12 border-t border-border/50 pt-6">
+        <CopyButton content={doc.content} />
+      </div>
     </div>
   )
 }

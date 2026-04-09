@@ -293,7 +293,10 @@ export function CopyButton({ content }: { content: string }) {
 
   return (
     <>
-      <div className="fixed right-6 bottom-6 z-50" ref={ref}>
+      <div
+        className="fixed right-4 bottom-4 z-50 sm:right-6 sm:bottom-6"
+        ref={ref}
+      >
         <Button
           variant="outline"
           size="sm"
