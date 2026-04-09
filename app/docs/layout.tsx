@@ -21,7 +21,7 @@ export default function DocsLayout({
 
       <MobileSidebar tree={tree} />
 
-      <main className="min-w-0 flex-1">
+      <main className="min-w-0 flex-1 pt-14 md:pt-0">
         <div className="mx-auto max-w-3xl px-4 py-8 md:px-8 md:py-12">
           {children}
         </div>
