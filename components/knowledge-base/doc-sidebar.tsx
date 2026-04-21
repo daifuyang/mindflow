@@ -6,11 +6,11 @@ import { X, BookOpen } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { FileTree } from "./file-tree"
 import { usePathname } from "next/navigation"
-import { useMobileSidebar } from "./mobile-sidebar-context"
+import { useDocSidebar } from "./doc-sidebar-context"
 
-export function MobileSidebar() {
+export function DocSidebar() {
   const pathname = usePathname()
-  const { isOpen, close, tree } = useMobileSidebar()
+  const { isOpen, close, tree } = useDocSidebar()
 
   useEffect(() => {
     close()

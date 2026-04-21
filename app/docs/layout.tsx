@@ -1,8 +1,6 @@
 import { getDocTree } from "@/lib/docs"
 import { FileTree } from "@/components/knowledge-base/file-tree"
-import { MobileSidebar } from "@/components/knowledge-base/mobile-sidebar"
-import Link from "next/link"
-import { BookOpen } from "lucide-react"
+import { SidebarMenuButton } from "@/components/knowledge-base/sidebar-menu-button"
 
 export default function DocsLayout({
   children,
@@ -12,33 +10,23 @@ export default function DocsLayout({
   const tree = getDocTree()
 
   return (
-    <div className="flex min-h-svh flex-col md:flex-row">
-      <aside className="hidden w-[260px] shrink-0 border-r border-border bg-sidebar md:block">
-        <div className="sticky top-0 flex h-svh flex-col">
-          <div className="flex h-14 items-center gap-2 border-b border-border px-4">
-            <Link
-              href="/"
-              className="flex items-center gap-2 transition-opacity hover:opacity-80"
-            >
-              <div className="flex size-7 items-center justify-center rounded-md bg-primary/10">
-                <BookOpen className="size-4 text-primary" />
-              </div>
-              <span className="font-semibold">MindFlow</span>
-            </Link>
+    <>
+      <SidebarMenuButton />
+      <div className="flex flex-1 flex-col md:flex-row">
+        <aside className="hidden w-[260px] shrink-0 border-r border-border bg-sidebar md:block">
+          <div className="sticky top-14 flex h-[calc(100vh-3.5rem)] flex-col">
+            <div className="flex-1 overflow-y-auto py-4">
+              <FileTree tree={tree} />
+            </div>
           </div>
-          <div className="flex-1 overflow-y-auto">
-            <FileTree tree={tree} />
+        </aside>
+
+        <main className="flex min-w-0 flex-1 justify-center">
+          <div className="mx-auto w-full max-w-7xl px-6 py-8 md:px-8 md:py-12">
+            {children}
           </div>
-        </div>
-      </aside>
-
-      <MobileSidebar tree={tree} />
-
-      <main className="min-w-0 flex-1 pl-14 md:pl-0">
-        <div className="mx-auto max-w-3xl px-4 py-8 md:px-8 md:py-12">
-          {children}
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   )
 }

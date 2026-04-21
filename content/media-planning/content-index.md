@@ -16,6 +16,7 @@ order: 2
 | 2026-04-01 | [AI 编程新体验：用 OpenCode Web 在指尖完成开发，对比 OpenClaw](/docs/media-planning/articles/ai-dev/2026-04-01-opencode-web-vs-openclaw)                 | published | 掘金、公众号 | [公众号](https://mp.weixin.qq.com/s/HKKTHCLWbHWYigxn43yysQ) |
 | 2026-04-02 | [手机发文的秘密：OpenCode + Markdown + 微信公众号助手，随时随地发布技术文章](/docs/media-planning/articles/ai-dev/2026-04-02-opencode-mobile-publishing) | published | 掘金、公众号 | [公众号](https://mp.weixin.qq.com/s/pfJ7bIMa4okXMNv_ObGc1Q) |
 | 2026-04-03 | [打造自己的低成本龙虾 claw：微信 AI 助手，用自然语言管任务、盯数据](/docs/media-planning/articles/ai-dev/2026-04-03-weixin-claw-low-cost-lobster)        | published | 掘金、公众号 | [公众号](https://mp.weixin.qq.com/s/nO6_DjLKxBgiPwyTJa1aeA) |
+| 2026-04-04 | [aic - 让 AI 生成的代码快速上线](/docs/media-planning/articles/ai-dev/aic-intro)                                                                         | published | 公众号       | [公众号](https://mp.weixin.qq.com/s/3BZWBs9L7PvyyQmSmZ7W4g) |
 
 ### 开源 CMS 实战
 
@@ -35,13 +36,19 @@ order: 2
 | ------ | ---- | ---- | ---- | ---- |
 | _暂无_ |      |      |      |      |
 
+### AI随想
+
+| 日期       | 标题                                                                                                  | 状态  | 平台         | 数据 |
+| ---------- | ----------------------------------------------------------------------------------------------------- | ----- | ------------ | ---- |
+| 2026-04-19 | [第一性原理：AI时代，写代码已不再是核心能力](/docs/media-planning/articles/ai-reflections/第一性原理) | ready | 掘金、公众号 |      |
+
 ## 月度数据汇总
 
 ### 2026 年 4 月
 
 | 指标        | 掘金 | 公众号 | 合计 |
 | ----------- | ---- | ------ | ---- |
-| 发文数      | 3    | 3      | 3    |
+| 发文数      | 3    | 4      | 4    |
 | 总阅读量    | 0    | 0      | 0    |
 | 总点赞/收藏 | 0    | 0      | 0    |
 | 涨粉数      | 0    | 0      | 0    |

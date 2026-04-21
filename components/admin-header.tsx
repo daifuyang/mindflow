@@ -1,22 +1,22 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import { Menu } from "lucide-react"
+import { useGlobalNav } from "@/components/knowledge-base/global-nav-context"
+import { ThemeToggle } from "@/components/knowledge-base/theme-toggle"
 
 export function AdminHeader() {
   const pathname = usePathname()
   const router = useRouter()
-  const [authenticated, setAuthenticated] = useState(false)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const token = localStorage.getItem("admin_token")
-    if (token) {
-      setAuthenticated(true)
+  const [authenticated, setAuthenticated] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("admin_token")
     }
-    setLoading(false)
-  }, [])
+    return false
+  })
+  const { toggle: toggleGlobalNav } = useGlobalNav()
 
   const handleLogout = () => {
     localStorage.removeItem("admin_token")
@@ -24,16 +24,14 @@ export function AdminHeader() {
     router.push("/login")
   }
 
-  if (loading) return null
-
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-      <div className="container flex h-14 items-center justify-between px-4">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
         <div className="flex items-center gap-6">
           <Link href="/" className="font-bold">
             MindFlow
           </Link>
-          <nav className="flex gap-4 text-sm">
+          <nav className="hidden gap-6 text-sm md:flex">
             <Link
               href="/docs"
               className={
@@ -58,7 +56,7 @@ export function AdminHeader() {
             )}
           </nav>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="hidden items-center gap-2 md:flex">
           {authenticated ? (
             <button
               onClick={handleLogout}
@@ -74,6 +72,16 @@ export function AdminHeader() {
               登录
             </Link>
           )}
+        </div>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <button
+            onClick={toggleGlobalNav}
+            className="inline-flex size-10 items-center justify-center rounded-lg border border-border/50 bg-background hover:bg-accent md:hidden"
+            aria-label="Toggle global menu"
+          >
+            <Menu className="size-5" />
+          </button>
         </div>
       </div>
     </header>

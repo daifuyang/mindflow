@@ -130,6 +130,19 @@ export function getFirstDocSlug(): string | null {
   return files[0].slug
 }
 
+export function getFolderFirstDocSlug(folderSlug: string): string | null {
+  const node = findNodeBySlug(getDocTree(), folderSlug)
+  if (!node || node.type !== "folder" || !node.children) return null
+  const files = collectFiles([node])
+  if (files.length === 0) return null
+  return files[0].slug
+}
+
+export function isFolder(nodes: TreeNode[], slug: string): boolean {
+  const node = findNodeBySlug(nodes, slug)
+  return node !== null && node.type === "folder"
+}
+
 function findNodeBySlug(
   nodes: TreeNode[],
   targetSlug: string
@@ -171,4 +184,33 @@ export function getBreadcrumbs(
     title: node.title || node.name,
     slug: node.slug,
   }))
+}
+
+export function getPrevNextDocs(slug: string[]): {
+  prev: { title: string; slug: string } | null
+  next: { title: string; slug: string } | null
+} {
+  const fullSlug = slug.join("/")
+  const tree = getDocTree()
+  const files = collectFiles(tree)
+  const currentIndex = files.findIndex((f) => f.slug === fullSlug)
+
+  return {
+    prev:
+      currentIndex > 0
+        ? {
+            title:
+              files[currentIndex - 1].title || files[currentIndex - 1].name,
+            slug: files[currentIndex - 1].slug,
+          }
+        : null,
+    next:
+      currentIndex < files.length - 1
+        ? {
+            title:
+              files[currentIndex + 1].title || files[currentIndex + 1].name,
+            slug: files[currentIndex + 1].slug,
+          }
+        : null,
+  }
 }
