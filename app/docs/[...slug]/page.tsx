@@ -8,11 +8,14 @@ import {
   isFolder,
   TreeNode,
 } from "@/lib/docs"
+import { verifyTokenFromCookies } from "@/lib/auth"
 import { MarkdownRenderer } from "@/components/knowledge-base/markdown-renderer"
 import { CopyButton } from "@/components/knowledge-base/copy-button"
 import { Breadcrumbs } from "@/components/knowledge-base/breadcrumbs"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Lock } from "lucide-react"
 import Link from "next/link"
+
+export const dynamic = "force-dynamic"
 
 function collectSlugs(nodes: TreeNode[]): string[][] {
   const slugs: string[][] = []
@@ -26,7 +29,7 @@ function collectSlugs(nodes: TreeNode[]): string[][] {
   return slugs
 }
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
   const tree = getDocTree()
   return collectSlugs(tree).map((slug) => ({ slug }))
 }
@@ -39,6 +42,7 @@ export default async function DocPage({
   const { slug } = await params
   const fullSlug = slug.join("/")
   const tree = getDocTree()
+  const isLoggedIn = await verifyTokenFromCookies()
 
   if (isFolder(tree, fullSlug)) {
     const firstDoc = getFolderFirstDocSlug(fullSlug)
@@ -51,6 +55,26 @@ export default async function DocPage({
 
   if (!doc) {
     notFound()
+  }
+
+  if (!doc.isPublic && !isLoggedIn) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <div className="rounded-full bg-muted p-4 mb-6">
+          <Lock className="size-8 text-muted-foreground" />
+        </div>
+        <h1 className="text-2xl font-bold mb-2">这篇文档是私密的</h1>
+        <p className="text-muted-foreground mb-6 max-w-md">
+          这是一篇内部文档，需要登录后才能查看。
+        </p>
+        <Link
+          href={`/login?redirect=/docs/${fullSlug}`}
+          className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+        >
+          登录后查看
+        </Link>
+      </div>
+    )
   }
 
   const breadcrumbs = getBreadcrumbs(slug)
@@ -81,9 +105,11 @@ export default async function DocPage({
 
       <MarkdownRenderer content={doc.content} />
 
-      <div className="mt-12 border-t border-border/50 pt-6">
-        <CopyButton content={doc.content} />
-      </div>
+      {isLoggedIn && (
+        <div className="mt-12 border-t border-border/50 pt-6">
+          <CopyButton content={doc.content} />
+        </div>
+      )}
 
       {(prev || next) && (
         <nav className="mt-8 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row">

@@ -8,6 +8,7 @@ export type TreeNode = {
   type: "file" | "folder"
   title?: string
   order?: number
+  isPublic?: boolean
   children?: TreeNode[]
 }
 
@@ -16,6 +17,7 @@ export type DocContent = {
   description?: string
   content: string
   slug: string[]
+  isPublic: boolean
 }
 
 type MetaConfig = {
@@ -35,6 +37,8 @@ function readMeta(dir: string): MetaConfig | null {
   }
 }
 
+const PRIVATE_DIR = "private"
+
 function buildTree(dir: string, basePath: string[] = []): TreeNode[] {
   if (!fs.existsSync(dir)) return []
 
@@ -43,6 +47,7 @@ function buildTree(dir: string, basePath: string[] = []): TreeNode[] {
 
   for (const entry of entries) {
     if (entry.name === "_meta.json") continue
+    if (entry.isDirectory() && entry.name === PRIVATE_DIR) continue
 
     const fullPath = path.join(dir, entry.name)
     const currentPath = [...basePath, entry.name]
@@ -73,6 +78,7 @@ function buildTree(dir: string, basePath: string[] = []): TreeNode[] {
         type: "file",
         title: (data.title as string) || formatName(nameWithoutExt),
         order: data.order as number | undefined,
+        isPublic: data.isPublic !== false,
       })
     }
   }
@@ -108,6 +114,7 @@ export function getDocContent(slug: string[]): DocContent | null {
     description: data.description as string | undefined,
     content: body,
     slug,
+    isPublic: (data.isPublic as boolean) !== false,
   }
 }
 

@@ -1,27 +1,34 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Menu } from "lucide-react"
 import { useGlobalNav } from "@/components/knowledge-base/global-nav-context"
 import { ThemeToggle } from "@/components/knowledge-base/theme-toggle"
 
+function checkAuth() {
+  if (typeof window !== "undefined") {
+    return !!localStorage.getItem("admin_token")
+  }
+  return false
+}
+
 export function AdminHeader() {
   const pathname = usePathname()
   const router = useRouter()
-  const [authenticated, setAuthenticated] = useState(() => {
-    if (typeof window !== "undefined") {
-      return !!localStorage.getItem("admin_token")
-    }
-    return false
-  })
+  const [authenticated, setAuthenticated] = useState(checkAuth)
   const { toggle: toggleGlobalNav } = useGlobalNav()
 
-  const handleLogout = () => {
+  useEffect(() => {
+    setAuthenticated(checkAuth())
+  }, [pathname])
+
+  const handleLogout = async () => {
     localStorage.removeItem("admin_token")
+    await fetch("/api/auth/logout", { method: "POST" })
     setAuthenticated(false)
-    router.push("/login")
+    router.push("/")
   }
 
   return (
@@ -43,37 +50,49 @@ export function AdminHeader() {
               知识库
             </Link>
             {authenticated && (
-              <Link
-                href="/admin"
-                className={
-                  pathname?.startsWith("/admin")
-                    ? "text-primary"
-                    : "text-muted-foreground"
-                }
-              >
-                管理
-              </Link>
+              <>
+                <Link
+                  href="/admin/todos"
+                  className={
+                    pathname?.startsWith("/admin/todos")
+                      ? "text-primary"
+                      : "text-muted-foreground"
+                  }
+                >
+                  待办
+                </Link>
+                <Link
+                  href="/admin"
+                  className={
+                    pathname === "/admin"
+                      ? "text-primary"
+                      : "text-muted-foreground"
+                  }
+                >
+                  管理
+                </Link>
+              </>
             )}
           </nav>
         </div>
-        <div className="hidden items-center gap-2 md:flex">
-          {authenticated ? (
-            <button
-              onClick={handleLogout}
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              退出登录
-            </button>
-          ) : (
-            <Link
-              href="/login"
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              登录
-            </Link>
-          )}
-        </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-4">
+          <div className="hidden items-center gap-2 md:flex">
+            {authenticated ? (
+              <button
+                onClick={handleLogout}
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                退出登录
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                登录
+              </Link>
+            )}
+          </div>
           <ThemeToggle />
           <button
             onClick={toggleGlobalNav}

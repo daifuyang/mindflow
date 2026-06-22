@@ -4,6 +4,15 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeHighlight from "rehype-highlight"
 import { cn } from "@/lib/utils"
+import { DynamicTable } from "@/components/dynamic-table"
+
+function Table({ children, ...props }: React.ComponentProps<"table">) {
+  return (
+    <DynamicTable {...props}>
+      {children}
+    </DynamicTable>
+  );
+}
 
 export function MarkdownRenderer({ content }: { content: string }) {
   return (
@@ -39,13 +48,13 @@ export function MarkdownRenderer({ content }: { content: string }) {
         "[&>pre]:overflow-x-auto [&>pre]:rounded-lg [&>pre]:border [&>pre]:border-border [&>pre]:bg-muted [&>pre]:px-4 [&>pre]:py-3 [&>pre]:text-[14px]",
         "[&>pre>code]:min-w-0 [&>pre>code]:bg-transparent [&>pre>code]:p-0 [&>pre>code]:font-mono [&>pre>code]:leading-relaxed [&>pre>code]:whitespace-pre-wrap [&>pre>code]:text-foreground",
         // Tables - Zebra striping (stronger contrast)
-        "[&>table]:my-6 [&>table]:w-full [&>table]:table-fixed [&>table]:overflow-x-auto [&>table]:rounded-lg [&>table]:border [&>table]:border-[oklch(0.8_0_0)] [&>table]:text-sm",
-        "[&>table>thead]:bg-muted",
-        "[&>table>thead>tr>th]:w-[25%] [&>table>thead>tr>th]:border-b [&>table>thead>tr>th]:border-[oklch(0.8_0_0)] [&>table>thead>tr>th]:px-3 [&>table>thead>tr>th]:py-3 [&>table>thead>tr>th]:text-left [&>table>thead>tr>th]:text-sm [&>table>thead>tr>th]:font-semibold [&>table>thead>tr>th]:whitespace-nowrap [&>table>thead>tr>th]:text-foreground",
-        "[&>table>tbody>tr>td]:px-3 [&>table>tbody>tr>td]:py-3 [&>table>tbody>tr>td]:text-[14px] [&>table>tbody>tr>td]:break-words [&>table>tbody>tr>td]:text-muted-foreground",
-        "[&>table>tbody>tr]:border-b [&>table>tbody>tr]:border-[oklch(0.85_0_0)]",
-        "[&>table>tbody>tr:nth-child(even)>td]:bg-muted/60",
-        "[&>table>tbody>tr:hover>td]:bg-muted/80",
+        "[&_table]:my-6 [&_table]:w-full [&_table]:table-fixed [&_table]:overflow-x-auto [&_table]:rounded-lg [&_table]:border [&_table]:border-[oklch(0.8_0_0)] [&_table]:text-sm",
+        "[&_table>thead]:bg-muted",
+        "[&_table>thead>tr>th]:w-[25%] [&_table>thead>tr>th]:border-b [&_table>thead>tr>th]:border-[oklch(0.8_0_0)] [&_table>thead>tr>th]:px-3 [&_table>thead>tr>th]:py-3 [&_table>thead>tr>th]:text-left [&_table>thead>tr>th]:text-sm [&_table>thead>tr>th]:font-semibold [&_table>thead>tr>th]:whitespace-nowrap [&_table>thead>tr>th]:text-foreground",
+        "[&_table>tbody>tr>td]:px-3 [&_table>tbody>tr>td]:py-3 [&_table>tbody>tr>td]:text-[14px] [&_table>tbody>tr>td]:break-words [&_table>tbody>tr>td]:text-muted-foreground",
+        "[&_table>tbody>tr]:border-b [&_table>tbody>tr]:border-[oklch(0.85_0_0)]",
+        "[&_table>tbody>tr:nth-child(even)>td]:bg-muted/60",
+        "[&_table>tbody>tr:hover>td]:bg-muted/80",
         // Horizontal rule
         "[&>hr]:my-10 [&>hr]:border-border/50",
         // Images
@@ -57,6 +66,7 @@ export function MarkdownRenderer({ content }: { content: string }) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
+        components={{ table: Table }}
       >
         {content}
       </ReactMarkdown>

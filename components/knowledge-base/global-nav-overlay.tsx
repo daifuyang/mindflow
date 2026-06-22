@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import Link from "next/link"
-import { X, Home, BookOpen, User, LogOut } from "lucide-react"
+import { X, Home, BookOpen, User, LogOut, ListTodo } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useGlobalNav } from "./global-nav-context"
 import { usePathname, useRouter } from "next/navigation"
@@ -27,10 +27,11 @@ export function GlobalNavOverlay() {
     }
   }, [isOpen])
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem("admin_token")
+    await fetch("/api/auth/logout", { method: "POST" })
     close()
-    router.push("/login")
+    router.push("/")
   }
 
   const isLoggedIn =
@@ -78,12 +79,20 @@ export function GlobalNavOverlay() {
             {isLoggedIn ? (
               <>
                 <Link
+                  href="/admin/todos"
+                  onClick={close}
+                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-accent"
+                >
+                  <ListTodo className="size-5" />
+                  待办
+                </Link>
+                <Link
                   href="/admin"
                   onClick={close}
                   className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-accent"
                 >
                   <User className="size-5" />
-                  我的
+                  管理
                 </Link>
                 <button
                   onClick={handleLogout}

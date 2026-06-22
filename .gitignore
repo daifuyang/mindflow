@@ -43,6 +43,15 @@ next-env.d.ts
 # IDE
 .trae/
 
+# opencode (speckit) — keep slash commands tracked, ignore everything else
+/.opencode/node_modules/
+/.opencode/package.json
+/.opencode/package-lock.json
+/.opencode/bun.lock
+/.opencode/.gitignore
+/.opencode/sessions/
+/.opencode/auth*
+
 # build output
 .next/
 
@@ -51,3 +60,5 @@ zhihu-auth.json
 zhihu-temp.json
 scripts/zhihu-qr-login.cjs
 scripts/zhihu-stealth-login.cjs
+
+/generated/prisma

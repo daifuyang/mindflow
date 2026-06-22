@@ -249,7 +249,7 @@ function markdownToWeChatHTML(md: string): string {
 
 type CopyFormat = "markdown" | "wechat"
 
-export function CopyButton({ content }: { content: string }) {
+export function CopyButton({ content, isLoggedIn = false }: { content: string; isLoggedIn?: boolean }) {
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState("已复制到剪贴板")
   const [open, setOpen] = useState(false)
@@ -290,6 +290,8 @@ export function CopyButton({ content }: { content: string }) {
     },
     [content]
   )
+
+  if (!isLoggedIn) return null
 
   return (
     <>

@@ -24,11 +24,11 @@
 #### 创建新分类（如需新增分类）
 
 ```bash
-# 1. 在 content/media-planning/articles/ 下创建英文文件夹
-mkdir content/media-planning/articles/新分类
+# 1. 在目标频道下创建英文文件夹
+mkdir content/writings/新分类
 
 # 2. 创建 _meta.json 设置中文显示名
-echo '{"title": "新分类中文名", "order": 6}' > content/media-planning/articles/新分类/_meta.json
+echo '{"title": "新分类中文名", "order": 7}' > content/writings/新分类/_meta.json
 ```
 
 #### 创建新文章
@@ -36,7 +36,7 @@ echo '{"title": "新分类中文名", "order": 6}' > content/media-planning/arti
 ```bash
 # 在已有分类目录下创建 .md 文件
 # 文件命名格式：YYYY-MM-DD-关键词.md
-touch content/media-planning/articles/ai-reflections/2026-04-19-第一性原理.md
+touch content/writings/first-principles/2026-06-09-示例文章.md
 ```
 
 文章 frontmatter：
@@ -57,7 +57,7 @@ order: 序号
 
 #### 更新索引
 
-每篇文章创建/发布后，更新 `content/media-planning/content-index.md`。
+每篇文章创建/发布后，更新 `content/writings/_archive/content-index.md`（或新建自己的索引页）。
 
 #### 构建与部署
 
@@ -73,20 +73,41 @@ cp -r out/* /usr/local/workspace/www/mindflow.zerocmf.com/
 
 ## 目录结构
 
+> 4 频道 + 1 私密区。所有一级目录由 `_meta.json` 控制中文显示和 order。
+
 ```
 content/
-├── media-planning/           # 自媒体规划
-│   ├── _meta.json           # 配置 title 和 order
-│   ├── content-index.md     # 文章索引
-│   ├── task-norms.md        # 任务规范
-│   └── articles/            # 文章正文（英文文件夹，中文显示名）
-│       ├── ai-dev/          # AI 辅助开发
-│       ├── open-source-cms/ # 开源 CMS 实战
-│       ├── fullstack-tutorials/ # 全栈技术教程
-│       ├── indie-dev-log/   # 独立开发者日志
-│       └── ai-reflections/   # AI随想
-└── about/                    # 个人介绍
+├── about/           # 频道 1：关于我（我是谁、目标、技术审美、增长策略）
+├── writings/        # 频道 2：思考与文章
+│   ├── first-principles/   # 第一性原理
+│   ├── revelations/        # 启示录（商业/电影/人间的长期启发）
+│   ├── ai-dev/             # AI 辅助开发
+│   ├── open-source-cms/    # 开源 CMS 实战
+│   ├── fullstack-tutorials/# 全栈技术教程
+│   ├── indie-dev-log/      # 独立开发者日志
+│   └── _archive/           # 旧索引/规范的归档快照
+├── projects/        # 频道 3：我在做的事（私密，靠 isPublic 控制）
+│   ├── commercial/         # 商业项目
+│   └── personal/           # 个人项目
+├── prompts/         # 频道 4：提示词库（与 AI 协作的工程基线）
+│   ├── fullstack/          # 全栈开发
+│   └── _reserved/          # 预留分类
+├── help/            # 频道 5：站点使用（order=99 放最后）
+│   ├── getting-started/    # 快速开始
+│   └── guides/             # 使用指南
+└── private/         # 私密区（构建时自动跳过，仅登录态可见）
 ```
+
+### 频道划分原则（第一性原理）
+
+| 频道 | 回答的问题 | 公开性 |
+|---|---|---|
+| `about/` | 我是谁 | 公开 |
+| `writings/` | 我在想什么、我写了什么 | 公开 |
+| `projects/` | 我在做什么 | 私密优先（isPublic 控制） |
+| `prompts/` | 我怎么和 AI 协作 | 公开 |
+| `help/` | 这个站怎么用 | 公开 |
+| `private/` | 完全私密的内部资料 | 构建排除 |
 
 ## 命名规范
 
@@ -97,18 +118,19 @@ content/
 | 文件夹名称 | 英文                    | `articles`、`ai-dev`、`ai-reflections`     |
 | 显示名称   | `_meta.json` 的 `title` | `AI 辅助开发`、`AI随想`                    |
 | API 路由   | 英文                    | `/api/articles`                            |
-| URL 路径   | 英文                    | `/docs/media-planning/articles/ai-dev/...` |
+| URL 路径   | 英文                    | `/docs/writings/ai-dev/...` |
 | 文件命名   | `YYYY-MM-DD-关键词.md`  | `2026-04-01-opencode-web.md`               |
 
-## 分类定义
+## writings/ 分类定义
 
 | 目录                  | 中文名称       | 说明                |
 | --------------------- | -------------- | ------------------- |
+| `first-principles`    | 第一性原理     | 长篇深度思考        |
+| `revelations`         | 启示录         | 商业/电影/人间的长期启发 |
 | `ai-dev`              | AI 辅助开发    | AI 编程工具使用体验 |
 | `open-source-cms`     | 开源 CMS 实战  | CMS 搭建教程        |
 | `fullstack-tutorials` | 全栈技术教程   | 技术教程            |
 | `indie-dev-log`       | 独立开发者日志 | 开发者心路历程      |
-| `ai-reflections`      | AI随想         | AI时代下的深度思考  |
 
 ## Frontmatter 规范
 
