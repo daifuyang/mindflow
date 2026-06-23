@@ -108,6 +108,14 @@ jobs:
           else
             PORT="$APP_PORT" HOSTNAME="$APP_HOST" pm2 start "npm start" --name "$PM2_APP_NAME"
           fi
-          curl --fail --silent --show-error "http://$APP_HOST:$APP_PORT" >/dev/null
-          pm2 save
+          for i in $(seq 1 30); do
+            if curl --fail --silent --show-error "http://$APP_HOST:$APP_PORT" >/dev/null; then
+              pm2 save
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Health check failed: http://$APP_HOST:$APP_PORT" >&2
+          pm2 logs "$PM2_APP_NAME" --lines 80 --nostream
+          exit 1
           EOF
