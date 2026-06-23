@@ -57,7 +57,7 @@ jobs:
             pm2 delete mindflow || true
 
             # Install dependencies and build
-            pnpm install --frozen-lockfile
+            pnpm install
             pnpm prisma generate
             pnpm build
 
