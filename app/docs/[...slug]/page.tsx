@@ -17,6 +17,17 @@ import Link from "next/link"
 
 export const dynamic = "force-dynamic"
 
+function formatDocDate(date: string): string {
+  const parsed = new Date(date)
+  if (Number.isNaN(parsed.getTime())) return date
+
+  return new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(parsed)
+}
+
 function collectSlugs(nodes: TreeNode[]): string[][] {
   const slugs: string[][] = []
   for (const node of nodes) {
@@ -96,6 +107,13 @@ export default async function DocPage({
         <h1 className="text-2xl font-bold tracking-tight break-words sm:text-3xl">
           {doc.title}
         </h1>
+        {doc.date && (
+          <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+            <span>{formatDocDate(doc.date)}</span>
+            <span>·</span>
+            <span className="font-medium text-foreground/70">富阳说</span>
+          </div>
+        )}
         {doc.description && (
           <p className="mt-3 text-lg leading-relaxed text-muted-foreground">
             {doc.description}

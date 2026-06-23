@@ -15,6 +15,7 @@ export type TreeNode = {
 export type DocContent = {
   title: string
   description?: string
+  date?: string
   content: string
   slug: string[]
   isPublic: boolean
@@ -112,6 +113,7 @@ export function getDocContent(slug: string[]): DocContent | null {
   return {
     title: (data.title as string) || formatName(slug[slug.length - 1]),
     description: data.description as string | undefined,
+    date: data.date ? String(data.date) : undefined,
     content: body,
     slug,
     isPublic: (data.isPublic as boolean) !== false,
