@@ -57,7 +57,8 @@ jobs:
             pm2 delete mindflow || true
 
             # Update pnpm and install dependencies
-            npm i -g pnpm@latest
+            rm -rf ~/.local/share/pnpm/store/v11
+            npm i -g pnpm@latest --force
             pnpm install
             pnpm prisma generate
             pnpm build
