@@ -33,28 +33,10 @@ jobs:
         env:
           NODE_ENV: production
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: |
-            .next/
-            node_modules/
-            package.json
-            pnpm-lock.yaml
-            ecosystem.config.cjs
-            prisma/
-          retention-days: 1
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-
       - name: Deploy to ECS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -70,15 +52,13 @@ jobs:
             git fetch origin
             git pull origin main
 
-            # Copy artifacts
-            cp -r .next node_modules package.json pnpm-lock.yaml ecosystem.config.cjs prisma ./
-
             # Stop existing PM2 process
             pm2 stop mindflow || true
             pm2 delete mindflow || true
 
             # Install dependencies and build
             pnpm install --frozen-lockfile
+            pnpm prisma generate
             pnpm build
 
             # Start PM2
