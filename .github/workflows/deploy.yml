@@ -57,8 +57,7 @@ jobs:
             pm2 delete mindflow || true
 
             # Update pnpm and install dependencies
-            corepack enable
-            corepack prepare pnpm@latest --activate
+            npm i -g pnpm@latest
             pnpm install
             pnpm prisma generate
             pnpm build
