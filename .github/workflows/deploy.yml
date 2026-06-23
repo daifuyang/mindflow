@@ -58,9 +58,9 @@ jobs:
 
       - name: Configure SSH
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.ALIYUN_SSH_KEY }}
-          SSH_HOST: ${{ secrets.ALIYUN_HOST }}
-          SSH_PORT: ${{ secrets.ALIYUN_PORT || '22' }}
+          SSH_PRIVATE_KEY: ${{ secrets.ALIYUN_SSH_KEY || secrets.ECS_KEY }}
+          SSH_HOST: ${{ secrets.ALIYUN_HOST || secrets.ECS_HOST }}
+          SSH_PORT: ${{ secrets.ALIYUN_PORT || secrets.ECS_PORT || '22' }}
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
@@ -70,10 +70,10 @@ jobs:
 
       - name: Sync source to server
         env:
-          SSH_USER: ${{ secrets.ALIYUN_USER }}
-          SSH_HOST: ${{ secrets.ALIYUN_HOST }}
-          SSH_PORT: ${{ secrets.ALIYUN_PORT || '22' }}
-          DEPLOY_PATH: ${{ secrets.ALIYUN_DEPLOY_PATH || '/home/dfy/workspace/projects/websites/mindflow' }}
+          SSH_USER: ${{ secrets.ALIYUN_USER || secrets.ECS_USER }}
+          SSH_HOST: ${{ secrets.ALIYUN_HOST || secrets.ECS_HOST }}
+          SSH_PORT: ${{ secrets.ALIYUN_PORT || secrets.ECS_PORT || '22' }}
+          DEPLOY_PATH: ${{ secrets.ALIYUN_DEPLOY_PATH || secrets.ECS_DEPLOY_PATH || '/home/dfy/workspace/projects/websites/mindflow' }}
         run: |
           ssh -i ~/.ssh/aliyun_deploy_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$DEPLOY_PATH'"
           rsync -az --delete \
@@ -90,10 +90,10 @@ jobs:
 
       - name: Build and restart on server
         env:
-          SSH_USER: ${{ secrets.ALIYUN_USER }}
-          SSH_HOST: ${{ secrets.ALIYUN_HOST }}
-          SSH_PORT: ${{ secrets.ALIYUN_PORT || '22' }}
-          DEPLOY_PATH: ${{ secrets.ALIYUN_DEPLOY_PATH || '/home/dfy/workspace/projects/websites/mindflow' }}
+          SSH_USER: ${{ secrets.ALIYUN_USER || secrets.ECS_USER }}
+          SSH_HOST: ${{ secrets.ALIYUN_HOST || secrets.ECS_HOST }}
+          SSH_PORT: ${{ secrets.ALIYUN_PORT || secrets.ECS_PORT || '22' }}
+          DEPLOY_PATH: ${{ secrets.ALIYUN_DEPLOY_PATH || secrets.ECS_DEPLOY_PATH || '/home/dfy/workspace/projects/websites/mindflow' }}
         run: |
           ssh -i ~/.ssh/aliyun_deploy_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
             "DEPLOY_PATH='$DEPLOY_PATH' PNPM_VERSION='${PNPM_VERSION}' PM2_APP_NAME='${PM2_APP_NAME}' APP_PORT='${APP_PORT}' APP_HOST='${APP_HOST}' bash -s" <<'EOF'
