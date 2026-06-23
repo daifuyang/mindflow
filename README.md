@@ -85,7 +85,7 @@ pnpm build
 
 1. GitHub Runner 执行依赖安装、Prisma Client 生成、类型检查和生产构建。
 2. 通过 SSH/rsync 同步源码到阿里云 ECS。
-3. 在服务器本地安装依赖、生成 Prisma Client、构建 Next.js 应用。
+3. 在服务器本地使用 `npm install` 安装依赖、生成 Prisma Client、构建 Next.js 应用。
 4. 使用 PM2 重启 `shuo-web-prod` 进程，并检查 `127.0.0.1:18301` 健康状态。
 
 需要在 GitHub 仓库配置以下 Secrets：
@@ -106,7 +106,7 @@ corepack enable
 npm install -g pm2
 
 # 首次启动可由 workflow 自动创建；如需手动启动：
-corepack pnpm@8.15.9 start
+PORT=18301 HOSTNAME=127.0.0.1 npm start
 ```
 
 Nginx 将 `shuo.daifuyang.com` 反向代理到 `127.0.0.1:18301`，证书使用 `aic` 签发并上传的 `shuo-daifuyang-com-2026`。

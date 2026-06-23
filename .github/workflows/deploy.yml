@@ -96,18 +96,17 @@ jobs:
           DEPLOY_PATH: ${{ secrets.ALIYUN_DEPLOY_PATH || secrets.ECS_DEPLOY_PATH || '/home/dfy/workspace/projects/websites/mindflow' }}
         run: |
           ssh -i ~/.ssh/aliyun_deploy_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
-            "DEPLOY_PATH='$DEPLOY_PATH' PNPM_VERSION='${PNPM_VERSION}' PM2_APP_NAME='${PM2_APP_NAME}' APP_PORT='${APP_PORT}' APP_HOST='${APP_HOST}' bash -s" <<'EOF'
+            "DEPLOY_PATH='$DEPLOY_PATH' PM2_APP_NAME='${PM2_APP_NAME}' APP_PORT='${APP_PORT}' APP_HOST='${APP_HOST}' bash -s" <<'EOF'
           set -euo pipefail
           cd "$DEPLOY_PATH"
-          corepack enable
-          corepack prepare pnpm@"$PNPM_VERSION" --activate
-          NODE_ENV=development pnpm install --frozen-lockfile --prod=false
-          pnpm exec prisma generate
-          pnpm build
+          rm -rf node_modules package-lock.json
+          npm install
+          npx prisma generate
+          npx next build
           if pm2 describe "$PM2_APP_NAME" >/dev/null 2>&1; then
             PORT="$APP_PORT" HOSTNAME="$APP_HOST" pm2 restart "$PM2_APP_NAME" --update-env
           else
-            PORT="$APP_PORT" HOSTNAME="$APP_HOST" pm2 start "corepack pnpm@$PNPM_VERSION start" --name "$PM2_APP_NAME"
+            PORT="$APP_PORT" HOSTNAME="$APP_HOST" pm2 start "npm start" --name "$PM2_APP_NAME"
           fi
           curl --fail --silent --show-error "http://$APP_HOST:$APP_PORT" >/dev/null
           pm2 save
