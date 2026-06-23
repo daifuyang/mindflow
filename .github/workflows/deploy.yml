@@ -56,7 +56,8 @@ jobs:
             pm2 stop mindflow || true
             pm2 delete mindflow || true
 
-            # Install dependencies using npm
+            # Clean and install dependencies
+            rm -rf node_modules package-lock.json
             npm install
             npx prisma generate
             npx next build
