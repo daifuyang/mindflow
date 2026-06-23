@@ -57,6 +57,8 @@ next-env.d.ts
 
 # sensitive files
 zhihu-auth.json
+scripts/deploy.sh
+env-config/
 zhihu-temp.json
 scripts/zhihu-qr-login.cjs
 scripts/zhihu-stealth-login.cjs

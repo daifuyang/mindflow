@@ -1,0 +1,133 @@
+name: Deploy to ECS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      skip_build:
+        description: 'Skip build step (use existing artifacts)'
+        required: false
+        default: 'false'
+
+env:
+  NODE_VERSION: '22'
+  ECS_HOST: ${{ secrets.ECS_HOST }}
+  ECS_USER: ${{ secrets.ECS_USER }}
+  ECS_KEY: ${{ secrets.ECS_KEY }}
+  ECS_PATH: ${{ secrets.ECS_DEPLOY_PATH }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        if: inputs.skip_build != 'true'
+        run: pnpm build
+        env:
+          NODE_ENV: production
+
+      - name: Upload artifacts
+        if: inputs.skip_build != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            .next/
+            node_modules/
+            package.json
+            pnpm-lock.yaml
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        if: needs.build.outputs.skip_build != 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+
+      - name: Prepare environment file
+        run: |
+          cat > .env.production << 'EOF'
+          NODE_ENV=production
+          PORT=3001
+          WECHAT_APPID=${{ secrets.WECHAT_APPID }}
+          WECHAT_SECRET=${{ secrets.WECHAT_SECRET }}
+          ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD_HASH=${{ secrets.ADMIN_PASSWORD_HASH }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          EOF
+
+      - name: Deploy to ECS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.ECS_HOST }}
+          username: ${{ secrets.ECS_USER }}
+          key: ${{ secrets.ECS_KEY }}
+          envs: ECS_PATH
+          script: |
+            set -e
+            cd $ECS_PATH
+            
+            # Pull latest code
+            git pull origin main
+            
+            # Install dependencies
+            pnpm install --frozen-lockfile
+            
+            # Build
+            pnpm build
+            
+            # Stop existing PM2 process
+            pm2 stop mindflow || true
+            pm2 delete mindflow || true
+            
+            # Start PM2
+            pm2 start ecosystem.config.cjs
+            pm2 save
+            
+            # Check status
+            pm2 status
+
+  notify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Success notification
+        if: success()
+        run: echo "✅ Deployment completed successfully!"
+
+      - name: Failure notification
+        if: failure()
+        run: echo "❌ Deployment failed. Please check the logs."
