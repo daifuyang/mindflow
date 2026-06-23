@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Menu } from "lucide-react"
 import { useGlobalNav } from "@/components/knowledge-base/global-nav-context"
 import { ThemeToggle } from "@/components/knowledge-base/theme-toggle"
+import { SITE_NAME } from "@/lib/site"
 
 function checkAuth() {
   if (typeof window !== "undefined") {
@@ -35,8 +36,9 @@ export function AdminHeader() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
         <div className="flex items-center gap-6">
-          <Link href="/" className="font-bold">
-            MindFlow
+          <Link href="/" className="flex items-center gap-2 font-bold">
+            <img src="/brand/logo.svg" alt="" className="size-7 rounded-lg" />
+            <span>{SITE_NAME}</span>
           </Link>
           <nav className="hidden gap-6 text-sm md:flex">
             <Link

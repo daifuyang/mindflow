@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "deploy": "pm2 restart mindflow",
-    "start": "next start -p 3001",
+    "deploy": "pm2 restart shuo-web-prod",
+    "start": "next start -H ${HOSTNAME:-127.0.0.1} -p ${PORT:-18301}",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit"

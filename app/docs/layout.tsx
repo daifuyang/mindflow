@@ -2,7 +2,7 @@ import { getDocTree } from "@/lib/docs"
 import { FileTree } from "@/components/knowledge-base/file-tree"
 import { SidebarMenuButton } from "@/components/knowledge-base/sidebar-menu-button"
 import { verifyTokenFromCookies } from "@/lib/auth"
-import type { TreeNode } from "@/lib/docs"
+import { isIndexableStatus, type TreeNode } from "@/lib/docs"
 
 function filterTreeByAuth(tree: TreeNode[], isLoggedIn: boolean): TreeNode[] {
   if (isLoggedIn) return tree
@@ -15,6 +15,7 @@ function filterTreeByAuth(tree: TreeNode[], isLoggedIn: boolean): TreeNode[] {
         return { ...node, children: filteredChildren }
       } else if (node.type === "file") {
         if (node.isPublic === false) return null
+        if (!isIndexableStatus(node.status)) return null
         return node
       }
       return node

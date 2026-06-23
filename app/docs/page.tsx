@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 import { getFirstDocSlug } from "@/lib/docs"
 
 export default function DocsPage() {
-  const firstSlug = getFirstDocSlug()
+  const firstSlug = getFirstDocSlug(true)
   if (firstSlug) {
     redirect(`/docs/${firstSlug}`)
   }

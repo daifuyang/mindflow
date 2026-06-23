@@ -1,9 +1,9 @@
 {
-  "name": "mindflow",
+  "name": "shuo-web-prod",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "next start -p 3001"
+    "start": "next start -H 127.0.0.1 -p 18301"
   },
   "dependencies": {
     "next": "16.1.7",

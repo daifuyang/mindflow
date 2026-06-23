@@ -7,15 +7,28 @@ export type TreeNode = {
   slug: string
   type: "file" | "folder"
   title?: string
+  description?: string
   order?: number
   isPublic?: boolean
+  status?: string
+  date?: string
+  cover?: DocCover
   children?: TreeNode[]
+}
+
+export type DocCover = {
+  wechat?: string
+  zhihu?: string
+  juejin?: string
 }
 
 export type DocContent = {
   title: string
   description?: string
   date?: string
+  status?: string
+  tags?: string[]
+  cover?: DocCover
   content: string
   slug: string[]
   isPublic: boolean
@@ -39,6 +52,16 @@ function readMeta(dir: string): MetaConfig | null {
 }
 
 const PRIVATE_DIR = "private"
+
+export function isIndexableStatus(status?: string): boolean {
+  return !status || status === "published"
+}
+
+export function isPubliclyVisibleDoc(
+  doc: Pick<DocContent, "isPublic" | "status">
+) {
+  return doc.isPublic && isIndexableStatus(doc.status)
+}
 
 function buildTree(dir: string, basePath: string[] = []): TreeNode[] {
   if (!fs.existsSync(dir)) return []
@@ -78,7 +101,11 @@ function buildTree(dir: string, basePath: string[] = []): TreeNode[] {
         slug: slug.join("/"),
         type: "file",
         title: (data.title as string) || formatName(nameWithoutExt),
+        description: data.description as string | undefined,
         order: data.order as number | undefined,
+        status: data.status ? String(data.status) : undefined,
+        date: data.date ? String(data.date) : undefined,
+        cover: data.cover as DocCover | undefined,
         isPublic: data.isPublic !== false,
       })
     }
@@ -100,6 +127,30 @@ export function getDocTree(): TreeNode[] {
   return buildTree(CONTENT_DIR)
 }
 
+export function getPublicDocTree(): TreeNode[] {
+  function filter(nodes: TreeNode[]): TreeNode[] {
+    return nodes
+      .map((node) => {
+        if (node.type === "folder" && node.children) {
+          const children = filter(node.children)
+          if (children.length === 0) return null
+          return { ...node, children }
+        }
+
+        if (node.type === "file") {
+          return node.isPublic !== false && isIndexableStatus(node.status)
+            ? node
+            : null
+        }
+
+        return node
+      })
+      .filter((node): node is TreeNode => node !== null)
+  }
+
+  return filter(getDocTree())
+}
+
 export function getDocContent(slug: string[]): DocContent | null {
   const filePath = path.join(CONTENT_DIR, ...slug) + ".md"
 
@@ -114,6 +165,9 @@ export function getDocContent(slug: string[]): DocContent | null {
     title: (data.title as string) || formatName(slug[slug.length - 1]),
     description: data.description as string | undefined,
     date: data.date ? String(data.date) : undefined,
+    status: data.status ? String(data.status) : undefined,
+    tags: Array.isArray(data.tags) ? (data.tags as string[]) : undefined,
+    cover: data.cover as DocCover | undefined,
     content: body,
     slug,
     isPublic: (data.isPublic as boolean) !== false,
@@ -132,15 +186,21 @@ function collectFiles(nodes: TreeNode[]): TreeNode[] {
   return files
 }
 
-export function getFirstDocSlug(): string | null {
-  const tree = getDocTree()
+export function getFirstDocSlug(publicOnly = false): string | null {
+  const tree = publicOnly ? getPublicDocTree() : getDocTree()
   const files = collectFiles(tree)
   if (files.length === 0) return null
   return files[0].slug
 }
 
-export function getFolderFirstDocSlug(folderSlug: string): string | null {
-  const node = findNodeBySlug(getDocTree(), folderSlug)
+export function getFolderFirstDocSlug(
+  folderSlug: string,
+  publicOnly = false
+): string | null {
+  const node = findNodeBySlug(
+    publicOnly ? getPublicDocTree() : getDocTree(),
+    folderSlug
+  )
   if (!node || node.type !== "folder" || !node.children) return null
   const files = collectFiles([node])
   if (files.length === 0) return null
@@ -200,7 +260,7 @@ export function getPrevNextDocs(slug: string[]): {
   next: { title: string; slug: string } | null
 } {
   const fullSlug = slug.join("/")
-  const tree = getDocTree()
+  const tree = getPublicDocTree()
   const files = collectFiles(tree)
   const currentIndex = files.findIndex((f) => f.slug === fullSlug)
 

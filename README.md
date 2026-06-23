@@ -1,6 +1,6 @@
-# Mindflow
+# 富阳说
 
-个人知识库与内容管理平台，基于 Next.js + Markdown 构建。
+AI 工具、自动化运维与独立开发实践内容站，基于 Next.js + Markdown 构建。
 
 > **富阳说：做 1000 个 AI 工具，让每个人享受 AI 便利。**
 
@@ -9,7 +9,20 @@
 - **框架**: Next.js 16 (App Router)
 - **样式**: Tailwind CSS 4 + shadcn/ui
 - **内容**: Markdown + gray-matter 解析
-- **部署**: 静态导出 (SSG) + Nginx
+- **部署**: GitHub Actions + 阿里云 ECS + PM2 + Nginx
+
+## 站点身份
+
+| 项目       | 当前值                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------- |
+| 对外品牌   | 富阳说                                                                                                  |
+| 主域名     | https://shuo.daifuyang.com                                                                              |
+| SEO 标题   | 富阳说：AI 工具、自动化运维与独立开发实践                                                               |
+| SEO 描述   | 富阳说记录 AI 工具、自动化运维、独立开发、开源 CMS 与提示词工程实践，帮助开发者和中小企业享受 AI 便利。 |
+| 品牌标识   | `/brand/logo.svg`                                                                                       |
+| 内部服务名 | `shuo-web-prod`                                                                                         |
+
+站点对外统一使用“富阳说”和 `shuo.daifuyang.com`；代码仓库可保留 `mindflow` 历史名称，运行时服务统一使用 `shuo-web-prod`。
 
 ## 内容创作工作流
 
@@ -62,14 +75,53 @@ order: 序号
 #### 构建与部署
 
 ```bash
-# 构建静态文件
+# 本地构建验证
 pnpm build
-
-# 部署到线上
-cp -r out/* /usr/local/workspace/www/mindflow.zerocmf.com/
 ```
 
-访问 https://mindflow.zerocmf.com 查看效果。
+访问 https://shuo.daifuyang.com 查看效果。
+
+线上部署通过 GitHub Actions 工作流 `.github/workflows/deploy.yml` 完成：
+
+1. GitHub Runner 执行依赖安装、Prisma Client 生成、类型检查和生产构建。
+2. 通过 SSH/rsync 同步源码到阿里云 ECS。
+3. 在服务器本地安装依赖、生成 Prisma Client、构建 Next.js 应用。
+4. 使用 PM2 重启 `shuo-web-prod` 进程，并检查 `127.0.0.1:18301` 健康状态。
+
+需要在 GitHub 仓库配置以下 Secrets：
+
+| Secret               | 说明                                                                  |
+| -------------------- | --------------------------------------------------------------------- |
+| `ALIYUN_HOST`        | 阿里云 ECS 公网 IP，例如 `139.196.89.64`                              |
+| `ALIYUN_USER`        | SSH 登录用户，例如 `dfy`                                              |
+| `ALIYUN_SSH_KEY`     | 私钥内容，需具备登录服务器权限                                        |
+| `ALIYUN_PORT`        | SSH 端口，可选，默认 `22`                                             |
+| `ALIYUN_DEPLOY_PATH` | 部署目录，可选，默认 `/home/dfy/workspace/projects/websites/mindflow` |
+
+服务器侧需要提前准备：
+
+```bash
+# Node.js 22、corepack、pm2
+corepack enable
+npm install -g pm2
+
+# 首次启动可由 workflow 自动创建；如需手动启动：
+corepack pnpm@8.15.9 start
+```
+
+Nginx 将 `shuo.daifuyang.com` 反向代理到 `127.0.0.1:18301`，证书使用 `aic` 签发并上传的 `shuo-daifuyang-com-2026`。
+
+### 运行时命名约定
+
+| 名称                 | 用途                    | 推荐                            |
+| -------------------- | ----------------------- | ------------------------------- |
+| `shuo.daifuyang.com` | 对外域名和 SEO/GEO 主体 | 固定使用                        |
+| `富阳说`             | 对外品牌名              | 固定使用                        |
+| `mindflow`           | 代码仓库历史名          | 可保留，不作为运行时服务名      |
+| `shuo-web-prod`      | PM2 运行时服务名        | 新规范：`{app}-{role}-{env}`    |
+| `127.0.0.1:18301`    | Next.js 内部监听地址    | 仅本机监听，由 Nginx 暴露 HTTPS |
+
+端口分配遵循 `docs/ops/server-port-standard.md`。`3000-3999` 属于框架默认端口区，不作为长期生产端口使用；线上 Web 应用使用 `18000-18999`，当前富阳说分配 `18301`。
 
 ## 目录结构
 
@@ -100,37 +152,37 @@ content/
 
 ### 频道划分原则（第一性原理）
 
-| 频道 | 回答的问题 | 公开性 |
-|---|---|---|
-| `about/` | 我是谁 | 公开 |
-| `writings/` | 我在想什么、我写了什么 | 公开 |
-| `projects/` | 我在做什么 | 私密优先（isPublic 控制） |
-| `prompts/` | 我怎么和 AI 协作 | 公开 |
-| `help/` | 这个站怎么用 | 公开 |
-| `private/` | 完全私密的内部资料 | 构建排除 |
+| 频道        | 回答的问题             | 公开性                    |
+| ----------- | ---------------------- | ------------------------- |
+| `about/`    | 我是谁                 | 公开                      |
+| `writings/` | 我在想什么、我写了什么 | 公开                      |
+| `projects/` | 我在做什么             | 私密优先（isPublic 控制） |
+| `prompts/`  | 我怎么和 AI 协作       | 公开                      |
+| `help/`     | 这个站怎么用           | 公开                      |
+| `private/`  | 完全私密的内部资料     | 构建排除                  |
 
 ## 命名规范
 
 > **核心原则**：文件夹英文，通过 `_meta.json` 的 `title` 字段控制中文显示
 
-| 类型       | 规范                    | 示例                                       |
-| ---------- | ----------------------- | ------------------------------------------ |
-| 文件夹名称 | 英文                    | `articles`、`ai-dev`、`ai-reflections`     |
-| 显示名称   | `_meta.json` 的 `title` | `AI 辅助开发`、`AI随想`                    |
-| API 路由   | 英文                    | `/api/articles`                            |
-| URL 路径   | 英文                    | `/docs/writings/ai-dev/...` |
-| 文件命名   | `YYYY-MM-DD-关键词.md`  | `2026-04-01-opencode-web.md`               |
+| 类型       | 规范                    | 示例                                   |
+| ---------- | ----------------------- | -------------------------------------- |
+| 文件夹名称 | 英文                    | `articles`、`ai-dev`、`ai-reflections` |
+| 显示名称   | `_meta.json` 的 `title` | `AI 辅助开发`、`AI随想`                |
+| API 路由   | 英文                    | `/api/articles`                        |
+| URL 路径   | 英文                    | `/docs/writings/ai-dev/...`            |
+| 文件命名   | `YYYY-MM-DD-关键词.md`  | `2026-04-01-opencode-web.md`           |
 
 ## writings/ 分类定义
 
-| 目录                  | 中文名称       | 说明                |
-| --------------------- | -------------- | ------------------- |
-| `first-principles`    | 第一性原理     | 长篇深度思考        |
+| 目录                  | 中文名称       | 说明                     |
+| --------------------- | -------------- | ------------------------ |
+| `first-principles`    | 第一性原理     | 长篇深度思考             |
 | `revelations`         | 启示录         | 商业/电影/人间的长期启发 |
-| `ai-dev`              | AI 辅助开发    | AI 编程工具使用体验 |
-| `open-source-cms`     | 开源 CMS 实战  | CMS 搭建教程        |
-| `fullstack-tutorials` | 全栈技术教程   | 技术教程            |
-| `indie-dev-log`       | 独立开发者日志 | 开发者心路历程      |
+| `ai-dev`              | AI 辅助开发    | AI 编程工具使用体验      |
+| `open-source-cms`     | 开源 CMS 实战  | CMS 搭建教程             |
+| `fullstack-tutorials` | 全栈技术教程   | 技术教程                 |
+| `indie-dev-log`       | 独立开发者日志 | 开发者心路历程           |
 
 ## Frontmatter 规范
 

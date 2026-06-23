@@ -78,7 +78,7 @@ content/
     └── daifuyang.md           # 个人介绍
 ```
 
-在线演示：[mindflow.zerocmf.com](https://mindflow.zerocmf.com)
+在线演示：[shuo.daifuyang.com](https://shuo.daifuyang.com)
 
 ### 3. 微信公众号助手：手机发布
 

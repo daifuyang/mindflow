@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import Link from "next/link"
-import { X, BookOpen } from "lucide-react"
+import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { FileTree } from "./file-tree"
 import { usePathname } from "next/navigation"
@@ -46,10 +46,8 @@ export function DocSidebar() {
               onClick={close}
               className="flex items-center gap-2 transition-opacity hover:opacity-80"
             >
-              <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
-                <BookOpen className="size-4 text-primary" />
-              </div>
-              <span className="font-semibold">MindFlow</span>
+              <img src="/brand/logo.svg" alt="" className="size-7 rounded-lg" />
+              <span className="font-semibold">富阳说</span>
             </Link>
             <button
               onClick={close}
