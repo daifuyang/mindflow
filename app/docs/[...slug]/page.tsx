@@ -6,6 +6,8 @@ import {
   getBreadcrumbs,
   getFolderFirstDocSlug,
   getPrevNextDocs,
+  getDocStatus,
+  getDocStatusLabel,
   isPubliclyVisibleDoc,
   isFolder,
   TreeNode,
@@ -25,6 +27,7 @@ import { Breadcrumbs } from "@/components/knowledge-base/breadcrumbs"
 import { ChevronLeft, ChevronRight, Lock } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next"
+import { Badge } from "@/components/ui/badge"
 
 export const dynamic = "force-dynamic"
 
@@ -179,6 +182,7 @@ export default async function DocPage({
   const { prev, next } = getPrevNextDocs(slug)
   const path = `/docs/${fullSlug}`
   const description = getDescription(doc)
+  const status = getDocStatus(doc.status)
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -222,13 +226,17 @@ export default async function DocPage({
         <h1 className="text-2xl font-bold tracking-tight break-words sm:text-3xl">
           {doc.title}
         </h1>
-        {doc.date && (
-          <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
-            <span>{formatDocDate(doc.date)}</span>
-            <span>·</span>
-            <span className="font-medium text-foreground/70">富阳说</span>
-          </div>
-        )}
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+          {doc.date && <span>{formatDocDate(doc.date)}</span>}
+          {doc.date && <span>·</span>}
+          <span className="font-medium text-foreground/70">富阳说</span>
+          <Badge
+            variant={status === "published" ? "secondary" : "outline"}
+            className="ml-1"
+          >
+            {getDocStatusLabel(doc.status)}
+          </Badge>
+        </div>
         {doc.description && (
           <p className="mt-3 text-lg leading-relaxed text-muted-foreground">
             {doc.description}

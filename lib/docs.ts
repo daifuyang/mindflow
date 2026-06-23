@@ -34,6 +34,8 @@ export type DocContent = {
   isPublic: boolean
 }
 
+export type DocStatus = "draft" | "ready" | "published"
+
 type MetaConfig = {
   title?: string
   order?: number
@@ -53,14 +55,26 @@ function readMeta(dir: string): MetaConfig | null {
 
 const PRIVATE_DIR = "private"
 
-export function isIndexableStatus(status?: string): boolean {
-  return !status || status === "published"
+export function getDocStatus(status?: string): DocStatus {
+  if (status === "draft" || status === "ready" || status === "published") {
+    return status
+  }
+
+  return "published"
+}
+
+export function getDocStatusLabel(status?: string): string {
+  const normalized = getDocStatus(status)
+
+  if (normalized === "draft") return "草稿"
+  if (normalized === "ready") return "待发布"
+  return "已发布"
 }
 
 export function isPubliclyVisibleDoc(
-  doc: Pick<DocContent, "isPublic" | "status">
+  doc: Pick<DocContent, "isPublic">
 ) {
-  return doc.isPublic && isIndexableStatus(doc.status)
+  return doc.isPublic
 }
 
 function buildTree(dir: string, basePath: string[] = []): TreeNode[] {
@@ -138,9 +152,7 @@ export function getPublicDocTree(): TreeNode[] {
         }
 
         if (node.type === "file") {
-          return node.isPublic !== false && isIndexableStatus(node.status)
-            ? node
-            : null
+          return node.isPublic !== false ? node : null
         }
 
         return node

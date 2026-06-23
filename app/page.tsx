@@ -12,7 +12,8 @@ import { Badge } from "@/components/ui/badge"
 import {
   getDocTree,
   getDocContent,
-  isIndexableStatus,
+  getDocStatus,
+  getDocStatusLabel,
   TreeNode,
 } from "@/lib/docs"
 import { verifyTokenFromCookies } from "@/lib/auth"
@@ -40,7 +41,6 @@ function filterTreeByAuth(tree: TreeNode[], isLoggedIn: boolean): TreeNode[] {
         return { ...node, children: filteredChildren }
       } else if (node.type === "file") {
         if (node.isPublic === false) return null
-        if (!isIndexableStatus(node.status)) return null
         return node
       }
       return node
@@ -88,14 +88,23 @@ function DocCard({ node }: { node: TreeNode }) {
   const firstLine = doc.content.split("\n").find((line) => line.trim()) || ""
   const description = firstLine.replace(/^[-*#>\s]+/, "").slice(0, 100)
   const category = node.slug.split("/")[0]
+  const status = getDocStatus(node.status)
 
   return (
     <Link href={`/docs/${node.slug}`} className="group block">
       <Card className="h-full overflow-hidden border-border/60 bg-card/60 transition-all duration-300 group-hover:border-primary/40 group-hover:shadow-md">
         <CardContent className="p-4">
-          <Badge variant="outline" className="mb-3 text-xs">
-            {category}
-          </Badge>
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <Badge variant="outline" className="text-xs">
+              {category}
+            </Badge>
+            <Badge
+              variant={status === "published" ? "secondary" : "outline"}
+              className="text-xs"
+            >
+              {getDocStatusLabel(node.status)}
+            </Badge>
+          </div>
           <h4 className="mb-2 line-clamp-1 font-medium text-foreground group-hover:text-primary">
             {node.title}
           </h4>

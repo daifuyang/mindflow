@@ -22,7 +22,7 @@ import {
   SITE_URL,
   THEME_COLOR,
 } from "@/lib/site"
-import { isIndexableStatus, type TreeNode } from "@/lib/docs"
+import { type TreeNode } from "@/lib/docs"
 import type { Metadata, Viewport } from "next"
 
 export const viewport: Viewport = {
@@ -94,7 +94,6 @@ function filterTreeByAuth(tree: TreeNode[], isLoggedIn: boolean): TreeNode[] {
         return { ...node, children: filteredChildren }
       } else if (node.type === "file") {
         if (node.isPublic === false) return null
-        if (!isIndexableStatus(node.status)) return null
         return node
       }
       return node
