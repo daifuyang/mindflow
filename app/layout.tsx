@@ -1,5 +1,3 @@
-import { Geist_Mono, Inter } from "next/font/google"
-
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
@@ -76,13 +74,6 @@ export const metadata: Metadata = {
   },
 }
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
-
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
-
 function filterTreeByAuth(tree: TreeNode[], isLoggedIn: boolean): TreeNode[] {
   if (isLoggedIn) return tree
 
@@ -114,12 +105,7 @@ export default async function RootLayout({
     <html
       lang="zh-CN"
       suppressHydrationWarning
-      className={cn(
-        "antialiased",
-        fontMono.variable,
-        "font-sans",
-        inter.variable
-      )}
+      className={cn("antialiased", "font-sans", "font-mono")}
     >
       <body>
         <ThemeProvider>
