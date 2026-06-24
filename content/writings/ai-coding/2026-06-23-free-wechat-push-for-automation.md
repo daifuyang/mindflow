@@ -1,5 +1,5 @@
 ---
-title: "免费的微信推送通道：用公众号测试号给任何自动化任务加通知能力"
+title: "我找到了一个免费的微信通知通道"
 date: 2026-06-23
 status: published
 platform:
@@ -19,7 +19,7 @@ cover:
   juejin: /assets/images/covers/2026-06-23-free-wechat-push-for-automation/cover-juejin.jpg
 ---
 
-# 免费的微信推送通道：用公众号测试号给任何自动化任务加通知能力
+# 我找到了一个免费的微信通知通道
 
 > **富阳说：做 1000 个 AI 工具，让每个人享受 AI 便利。**
 

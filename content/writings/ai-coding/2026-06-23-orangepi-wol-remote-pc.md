@@ -1,5 +1,5 @@
 ---
-title: "我用 OrangePi 做远程开机网关：Windows App 一键唤醒家里 PC"
+title: "我用 OrangePi 远程唤醒家里 PC"
 date: 2026-06-23
 status: draft
 platform:
@@ -13,9 +13,11 @@ tags:
   - FRP
   - 远程桌面
 order: 6
+cover:
+  wechat: /assets/images/covers/2026-06-23-orangepi-wol-remote-pc/cover-wechat.jpg
 ---
 
-# 我用 OrangePi 做远程开机网关：Windows App 一键唤醒家里 PC
+# 我用 OrangePi 远程唤醒家里 PC
 
 > **富阳说：做 1000 个 AI 工具，让每个人享受 AI 便利。**
 

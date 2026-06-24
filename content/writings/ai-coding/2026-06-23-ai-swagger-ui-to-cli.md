@@ -1,5 +1,5 @@
 ---
-title: "AI 时代，建议你认真写 Swagger：从接口文档到 AI 可调用 CLI"
+title: "为什么 AI 时代更应该认真写 Swagger？"
 date: 2026-06-23
 status: published
 platform:
@@ -13,9 +13,11 @@ tags:
   - MCP
   - Agent
 order: 8
+cover:
+  wechat: /assets/images/covers/2026-06-23-ai-swagger-ui-to-cli/cover-wechat.jpg
 ---
 
-# AI 时代，建议你认真写 Swagger：从接口文档到 AI 可调用 CLI
+# 为什么 AI 时代更应该认真写 Swagger？
 
 > **富阳说：做 1000 个 AI 工具，让每个人享受 AI 便利。**
 

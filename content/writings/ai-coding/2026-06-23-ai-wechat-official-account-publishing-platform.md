@@ -1,5 +1,5 @@
 ---
-title: "用 AI 做公众号内容中台：从 Markdown 到微信公众号草稿箱"
+title: "我用 AI 搭了一个公众号内容中台"
 date: 2026-06-23
 status: published
 platform:
@@ -13,9 +13,11 @@ tags:
   - TanStack Start
   - 独立开发
 order: 7
+cover:
+  wechat: /assets/images/covers/2026-06-23-ai-wechat-official-account-publishing-platform/cover-wechat.jpg
 ---
 
-# 用 AI 做公众号内容中台：从 Markdown 到微信公众号草稿箱
+# 我用 AI 搭了一个公众号内容中台
 
 > **富阳说：做 1000 个 AI 工具，让每个人享受 AI 便利。**
 

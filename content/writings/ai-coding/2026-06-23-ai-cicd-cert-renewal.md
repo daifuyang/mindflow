@@ -1,5 +1,5 @@
 ---
-title: "用 AI + CI/CD 实现 HTTPS 证书自动续期：从手工运维到自愈流水线"
+title: "HTTPS 证书续期，别再靠手工记了"
 date: 2026-06-23
 status: published
 platform:
@@ -18,7 +18,7 @@ cover:
   juejin: /assets/images/covers/2026-06-23-ai-cicd-cert-renewal/cover-juejin.jpg
 ---
 
-# 用 AI + CI/CD 实现 HTTPS 证书自动续期：从手工运维到自愈流水线
+# HTTPS 证书续期，别再靠手工记了
 
 > **富阳说：做 1000 个 AI 工具，让每个人享受 AI 便利。**
 
